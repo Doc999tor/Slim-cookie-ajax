@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+	<style>
+		body {margin: 0;padding: 1rem;font-family: Arial, "Helvetica Neue", Helvetica, sans-serif;}
+		form {padding: 1rem;}
+		label {display: block;}
+		label:not(:last-child) {margin-bottom: 1rem;}
+		input {padding: 1rem;}
+	</style>
+</head>
+<body>
+	<form action="/check-login" method="POST">
+		<label><input type="text" name="username" placeholder="username" value="user"></label>
+		<label><input type="text" name="password" placeholder="password" value="pass"></label>
+		<label for=""><input type="submit"></label>
+	</form>
+
+	<script>
+		document.forms[0].addEventListener('submit', e => {
+			e.preventDefault();
+
+			fetch(e.target.action, {
+				method: e.target.method,
+				headers: new Headers({
+					'Content-Type': 'application/x-www-form-urlencoded',
+					'X-Requested-With': "XMLHttpRequest"
+				}),
+				body: createBody(e.target, ['username', 'password']),
+				credentials: 'include'
+			})
+			.then(response => {
+				if (response.status === 200) {
+					location.href = '/'
+				}
+				return response.text()
+			})
+			.then(body => console.log(body))
+		});
+
+		function createBody(form, fieldArr) {
+			return fieldArr.map(field => field + '='+ form.querySelector(`input[name=${field}]`).value).join('&')
+		}
+	</script>
+</body>
+</html>
