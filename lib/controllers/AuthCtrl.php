@@ -23,16 +23,16 @@ class AuthCtrl {
 
 	public function checkLogin (Request $request, Response $response):Response {
 		$body = $request->getParsedBody();
-		if ($body['username'] === 'user' && $body['password'] === 'pass') {
-			$setCookie = SetCookie::create('hash')
-			    ->withValue(md5($body['username']))
-			    ->withExpires(time()+60)
-			    ->withMaxAge(60);
-			    // ->rememberForever();
-			$response = FigResponseCookies::set($response, $setCookie);
-			return $response->withRedirect('/');
-		} else {
-			return $response->withStatus(401);
-		}
+		$setCookie = SetCookie::create('hash')
+			->withValue(md5($body['username']))
+			->withExpires(time()+60)
+			->withMaxAge(60);
+			// ->rememberForever();
+		$response = FigResponseCookies::set($response, $setCookie);
+		return $response->withRedirect('/');
+		// if ($body['username'] === 'user' && $body['password'] === 'pass') {
+		// } else {
+		// 	return $response->withStatus(401);
+		// }
 	}
 }

@@ -11,10 +11,12 @@ use \Psr\Http\Message\ResponseInterface		 as Response;
 
 class SessMiddleware {
 	public function __invoke(Request $request, Response $response, callable $next) {
-		if ($request->getUri()->getPath() === '/login') {
+		if (strpos($request->getUri()->getPath(), 'login') !== false) {
+			file_put_contents('log.log', $request->getUri()->getPath());
 			return $next($request, $response);
-		}
+		} else {}
 
+		file_put_contents('log.log', "\n" . $request->getUri()->getPath(), FILE_APPEND);
 		$cookie = \Dflydev\FigCookies\Cookies::fromRequest($request);
 		$cookie = FigRequestCookies::get($request, 'hash');
 
@@ -32,6 +34,7 @@ class SessMiddleware {
 			$response = FigResponseCookies::set($response, $setCookie);
 
 			return $response;
+			file_put_contents('log.log', "\nlife after life", FILE_APPEND);
 		} else {
 			if ($request->isXhr()) {
 				return $response->withStatus(401);
