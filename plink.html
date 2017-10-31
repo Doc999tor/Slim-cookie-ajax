@@ -1,0 +1,171 @@
+
+<!DOCTYPE html>
+<html lang="he">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width">
+	<title>מוסף פניות של אופטימוס</title>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+	<style>
+		body {
+			direction: rtl;
+			/* margin: 0; */
+			padding: 1rem;
+		}
+		form {
+			max-width: 900px;
+			width: 60%;
+			margin: 0 auto;
+		}
+		label {display: block;}
+ 		span.label {
+ 			display: inline-block;
+ 			min-width: 120px;
+ 			text-align: right;
+ 			text-align: start;
+ 			color: currentcolor;
+ 			font-size: inherit;
+ 			vertical-align: top;
+ 		}
+		input, select, textarea {
+			max-width: 500px;
+			width: 50%;
+			padding: 5px;
+			margin-bottom: 1rem;
+		}
+		input[type=submit] {
+			width: 200px;
+		}
+		select {
+			max-width: 250px;
+			width: 25%;
+		}
+	</style>
+</head>
+<body>
+<!------------------ Case Sample HTML ---------------------->
+<form action="https://app.powerlink.co.il/web/webtocase.aspx" method="post">
+	<h1>ברוכים הבאים למסוף פניות של אופטימוס</h1>
+	<input type=hidden id="returnpath" name="returnpath" value="http://www.google.com">
+	<input type=hidden id="uid" name="uid" value="B4DE520A-932B-4D20-8FDF-0058DD16A48C">
+
+	<label>
+		<span class="label">שם לקוח</span>
+		<input type="search" id="search_client">
+		<select name="accountname" id="accountname"></select>
+	</label>
+	<script type="text/javascript">
+	var clientsUrl = "https://secure.powerlink.co.il/api/record/1?tokenid=72aa4342-d0e4-41e8-b1d2-4fdf7c4f4358"
+	var headers = new Headers({'Content-Type': 'application/json'})
+
+	document.getElementById('search_client').addEventListener('keydown', e => {
+		e.preventDefault();
+		if (e.keyCode < 65 || e.keyCode > 90) {return false;}
+		console.log(e)
+		var body = `
+			{
+				"objecttype": 1,
+				"page_size": 500,
+				"page_number": 1,
+				"fields": "accountname,idnumber",
+				"query": "(accountname start-with ${e.target.value}) OR (accountname end-with ${e.target.value})",
+				"sort_by": "accountname",
+				"sort_type": "desc"
+			}
+		`;
+		fetch(clientsUrl, {
+			method: "POST", 
+			mode: "cors", 
+			headers,
+			body, 
+		})
+		.then(response => response.json())
+		.then(clientsList => {
+			console.log(clientsList)
+			document.getElementById('accountname').innerHTML = clientsList.data.Records.map(client => `<option value="${client.accountid}">${client.accountname}</option>`).join('')
+		})
+		
+	})
+	</script>
+
+	<label>
+		<span class="label">איש קשר</span>
+		<input type='text' placeholder="איש קשר" id='pcfsystemfield285' name='pcfsystemfield285' value=''>
+	</label>
+	<label>
+		<span class="label">טלפון איש קשר</span>
+		<input type='text' placeholder="טלפון איש קשר" id='pcfsystemfield279' name='pcfsystemfield279' value=''>
+	</label>
+
+	<label>
+		<span class="label">סטאטוס</span>
+		<select name='statuscode' id='1'>
+			<!-- <option value=''></option> -->
+			<option value='1'>חדש/פתוח</option>
+			<option value='12'>** חדש/שיחה חוזרת **</option>
+			<option value='11'>** לחזור ללקוח **</option>
+			<option value='2'>בטיפול</option>
+			<option value='9'>השהייה</option>
+			<option value='8'>המשך טיפול</option>
+			<option value='4'>בבדיקה צוות פיתוח</option>
+			<option value='10'>נסגר/בוצע + המשך מעקב</option>
+			<option value='6'>נסגר/בוצע</option>
+		</select>
+	</label>
+	<label>
+		<span class="label">נושא</span>
+		<input type='text' placeholder="נושא" id='title' name='title' value=''>
+	</label>
+	<label>
+		<span class="label">מחלקה</span>
+		<select name='casetypecode' id='casetypecode'>
+			<!-- <option value=''></option> -->
+			<option value='4'>תמיכה טכנית</option>
+			<option value='5'>שירות לקוחות</option>
+			<option value='6'>מכירות</option>
+			<option value='7'>אדמיניסטרציה והנה"ח</option>
+			<option value='8'>פיתוח</option>
+		</select>
+	</label>
+	<label>
+		<span class="label">תגיות</span>
+		<select name='pcfsystemfield305' id='pcfsystemfield305'>
+			<!-- <option value=''></option> --><option value='29'>ביטול עסקת אשראי</option><option value='5'>קופה - תמיכה כללית</option><option value='12'>רישיון - חידוש</option><option value='4'>תוכנה תקועה</option><option value='1'>תמיכה כללית</option><option value='58'>---------</option><option value='2'>SMS - הזמנה</option><option value='26'>SMS - תקלה</option><option value='13'>ברקוד - הרחבה</option><option value='24'>ברקוד - תקלה</option><option value='32'>גיבוי אוטומטי</option><option value='33'>גיבוי</option><option value='53'>גרסה 17</option><option value='36'>דו"חות</option><option value='17'>דפי נחיתה וקופונים סלולריים</option><option value='41'>הגדרות תוכנה</option><option value='7'>הדרכת לקוח</option><option value='18'>הנהלת חשבונות</option><option value='3'>העברת תוכנה</option><option value='47'>הצעת מחיר</option><option value='11'>הקפאת תוכנה</option><option value='40'>השתלמות</option><option value='49'>התקנת תוכנה</option><option value='6'>זיכוי חשבונית</option><option value='57'>חידוש אחריות ותמיכה</option><option value='14'>חומרה וציוד - הרחבה</option><option value='46'>יומן</option><option value='35'>ייצוא לאקסל</option><option value='16'>כרטיסי מועדון - תמיכה/הדרכה</option><option value='15'>כרטיסי מועדון Giftcard - הרחבה</option><option value='44'>כרטיסי עובד - הזמנה</option><option value='43'>כרטיסי עובד - תקלה</option><option value='50'>לוגו חדש/עדכון</option><option value='23'>מגירה - תקלה</option><option value='30'>מדפסת - הגדרות/התקנה</option><option value='8'>מדפסת - תקלה</option><option value='48'>מסוף - התקנה</option><option value='54'>מסוף ש.ב.א - הרחבה</option><option value='56'>משוב</option><option value='21'>סגירת תוכנה</option><option value='39'>סטטיסטיקה</option><option value='19'>סיום התקשרות</option><option value='52'>סיסמה - שינוי/ עדכון</option><option value='34'>סנכרון לנייד</option><option value='38'>עדכון ח.פ/ע.מ.</option><option value='55'>עמדה משנית - חיבור/ ניתוק</option><option value='27'>עמדה נוספת - הרחבה</option><option value='20'>עמדה נוספת - תקלה</option><option value='45'>פריסת תשלומים</option><option value='42'>צוות ושעון נוכחות</option><option value='51'>קופה - הרחבה</option><option value='25'>קופה חכמה - תמיכה כללית</option><option value='31'>רכש/מלאי</option><option value='37'>שדרוג תוכנה</option><option value='22'>שיחה מזוהה - הרחבה</option><option value='9'>שיחה מזוהה - תקלה</option>
+		</select>
+	</label>
+
+	<label>
+		<span class="label">עדיפות</span>
+		<select name='prioritycode' id='prioritycode'>
+			<!-- <option value=''></option> -->
+			<option value='2'>(1) גבוהה</option>
+			<option value='1'>(2) רגילה</option>
+			<option value='3'>(3) נמוכה</option>
+			<option value='4'>(4) דחוף</option>
+		</select>
+		</label>
+
+		<label>
+			<span class="label">פירוט והערות</span>
+			<textarea placeholder="פירוט והערות" id='pcfsystemfield281' name='pcfsystemfield281' rows="5"></textarea>
+		</label>
+		<input type="hidden" name="pcfsystemfield334" value="10">
+<!-- 		<label>
+			<span class="label">שם פותח קריאה</span>
+			<select name='pcfsystemfield334' id='pcfsystemfield334'>
+				<option value=''></option>
+				<option value='9'>מעיין</option>
+				<option value='2'>עמיר</option>
+				<option value='6'>יבגני</option>
+				<option value='7'>ויטלי</option>
+				<option value='3'>יעקב</option>
+				<option value='4'>עידן</option>
+				<option value='5'>פבל</option>
+				<option value='8'>אנג'לה</option>
+				<option value='1'>גלית</option>
+				<option value='10'>חברה חיצונית</option>
+			</select>
+		</label> -->
+		<input type="submit" value="שלח קריאה">
+	</form>
+		<!------------------ End of Case Sample HTML ---------------------->
